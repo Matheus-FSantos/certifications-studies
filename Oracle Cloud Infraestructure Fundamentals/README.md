@@ -1,4 +1,4 @@
-# Oracle Cloud Infrastructure Fundamentals - Course Annotations
+# Oracle Cloud Infrastructure Fundamentals - Course Notes
 Anotações para se preparar para a certificação IZO-1085-23, certificação oficial da Oracle.
 
 
@@ -40,4 +40,13 @@ Essas 7 categorias e seus serviços informados são apenas alguns dos 80 serviç
 
 Nessa aula será apresentado um pouco mais sobre a arquitetura da Oracle Cloud Infrastruture, que irá começar pelas ***"regiões"***.
 
-**Regiões:** É uma área geográfica localizada 
+**Regiões (Regions):** É **uma área geográfica localizada composta de** um ou mais ***domìnios de disponibilidade***.
+
+**Domìnios de Disponibilidade (Availability Domains - "AD"):** **São**, um ou mais, **data centers tolerantes a falhas**, **localizados em uma região**, mas **conectados** uns aos outros **por uma rede de largura de banda alta** e **baixa latência**, resumidamente, eles tem as seguintes caracteristicas:
+
+- Tolerancia a falha;
+- Localizados em uma região;
+- Conectados por uma rede de largura de banda alta;
+- e Baixa latência.
+
+**Dominios de Falha (Fault Domains - FD):** São **um agrupamento de hardware e infraestrutura dentro de um dominio de disponibilidade** para fornecer antiafinidade. Pode ser pensado como *data centers lógicos.*
