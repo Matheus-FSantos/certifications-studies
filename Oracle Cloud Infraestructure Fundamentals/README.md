@@ -50,3 +50,30 @@ Nessa aula será apresentado um pouco mais sobre a arquitetura da Oracle Cloud I
 - e Baixa latência.
 
 **Dominios de Falha (Fault Domains - FD):** São **um agrupamento de hardware e infraestrutura dentro de um dominio de disponibilidade** para fornecer antiafinidade. Pode ser pensado como *data centers lógicos.*
+
+
+> **Como escolher uma região?** </br>
+ Para escolher uma região primeiro você deve escolher a que está mais próximo dos seus usuários, para uma latencia menor e mais performance. </br></br>
+ O segundo critério são os "requisitos de residencia e conformidade de dados". Muitos países têm requisitos rigorosos de residência de dados e você deve cumprir com eles. Portanto, escolha uma região com base nesses requisitos de conformidade. </br></br>
+ E por fim, deve-se levar em conta a disponibilidade do serviço. Novos serviços em nuvem são disponibilizados com base na demanda regional, por motivos de conformidade regulatória, com disponibilidade de recursos e vários outros fatores. </br></br>
+ Tenha sempre esses 3 critérios para escolher uma região.
+
+#
+
+### Mais sobre cada um
+
+**AD:** Os *ADs* são isolados um dos outros, tolerantes a falhas e improvável que falhem simultaneamente (por não compartilharem uma infraestrutura fisica, é improvavel que uma falha em um AD impacte nos outros, como na foto abaixo).
+
+![Dominios de disponibilidade](image.png)
+
+> Obs.: Cada dominio de disponibilidade (AD) tem 3 dominios de falha (FD), como na foto abaixo.
+
+![3 dominios de disponibilidade com 3 dominios de falha para cada](image-1.png)
+
+**FD:** São "data centers lógicos" dentro dos *ADs*. A idéia é que você coloque os recursos em diferentes dominios de falha (FD) e eles não compartilham um unico ponto de falha de hardware (como servidores fisicos, switcges, rack fisico e etc.) como na imagem abaixo.
+
+![2 dominios de falha funcionando e 1 com falha](image-2.png)
+
+Fazendo isso, você pode obter mais disponibilidade, e aproveitará os FDs corretamente, é claro.
+
+Mas qual seria a recomendação? A recomendação é que temos essas contruções, como dominios de falha e dominios de disponibilidade, nos ajudam a evitar pontos únicos de falha. Portanto, garantimos que tudo seja redundate e com isso, então, caso tenhamos falhas de hardware, diminuimos essas falhas ao máximo possivel.
