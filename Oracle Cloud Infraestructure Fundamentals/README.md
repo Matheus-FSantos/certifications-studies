@@ -8,6 +8,7 @@ Anotações para se preparar para a certificação IZO-1085-23, certificação o
 
 ### 🧭 - Navegação:
 2. OCI Overview
+4. Identity and Access Management
 
 ###
 # 2. OCI Introduction
@@ -64,15 +65,15 @@ Nessa aula será apresentado um pouco mais sobre a arquitetura da Oracle Cloud I
 
 **AD:** **Os *ADs* são isolados um dos outros, tolerantes a falhas e improvável que falhem simultaneamente** (**por não compartilharem uma infraestrutura fisica**, é improvavel que uma falha em um AD impacte nos outros, como na foto abaixo).
 
-![Dominios de disponibilidade](image.png)
+![OCI-More - AD](image.png)
 
 > ***Obs.:*** **Cada** dominio de disponibilidade **(AD) tem 3** dominios de falha **(FD)**, como na foto abaixo.
 
-![3 dominios de disponibilidade com 3 dominios de falha para cada](image-1.png)
+![OCI-More - 3 ADs with 3 FDs](image-1.png)
 
 **FD:** São "data centers lógicos" dentro dos *ADs*. A idéia é que você coloque os recursos em diferentes dominios de falha (FD) e eles não compartilham um unico ponto de falha de hardware (como servidores fisicos, switcges, rack fisico e etc.) como na imagem abaixo.
 
-![2 dominios de falha funcionando e 1 com falha](image-2.png)
+![OCI-More - 2 FDs works and 1 FD not working](image-2.png)
 
 Fazendo isso, você pode obter mais disponibilidade, e aproveitará os FDs corretamente, é claro.
 
@@ -121,3 +122,119 @@ Mudando de cenário e indo para os serviços de multinuvem, o primeiro ponto int
 E **por ser uma conexão privada**, podemos assumir que **essa conexão terá uma latência menor que 2 milissegundos**, uma latência muito muito baixa.
 
 > ***Obs.:*** O preço dessa oferta é baseado exclusivamente nos portos e nos circuitos que você provisiona em ambos os lados. **Não há cobrança pela largura de banda (seja de entrada ou saida) consumida.**
+
+###
+# 4. Identity and Access Management
+
+### Aula 01: IAM Introduction
+
+**IAM:** **Identity and Access Management**, as vezes também é conhecido como: **controle de acesso refinado** (Fine-grained Access Control) ou **serviço  de controle de acesso baseado em atribuição**
+
+Há dois aspectos principais desse serviço:
+
+1. A primeira é chamada de **autenticação** ou também chamada de **AuthN**;
+2. O segundo aspecto é chamado de **autorização** ou também chamado de **AuthZ**.
+
+resumidamente, a **autenticação** tem que **lida**r **com a identidade ou quem é alguem**, **já a autorização** tem que **lida**r **com a permissão** ou o que alguém tem permissão.
+
+***O IAM no OCI consiste de Principal (diretor), Federation (federação) e alguns outros componentes.***
+
+### Dominios de identidade
+
+Os **dominios de identidade são**, como mostra na imagem abaixo, **um container para seus usuários e grupos**.
+
+![OCI-Identity Domains - Identity Domains](image-5.png)
+
+Podemos pensar como uma construção que representa uma população de usuários na OCI e as configurações de segurança associadas.
+
+Na prática, isso funcionaria mais ou menos assim:
+
+1. Deve-se criar os dominios de identidade primeiro;
+2. Em seguida, adicionamos os usuários e grupos dentro dos ID;
+3. "Setamos" as politicas para esses grupos (onde cada politica tem escopo a uma tenancy, uma conta ou um compartimento);
+4. Os recursos estão disponiveis em um compartimento.
+
+> Obs.: Em resumo, **tenancy é como um espaço exclusivo para um cliente dentro da Oracle Cloud Infrastructure, onde eles podem configurar e controlar seus recursos de maneira independente**.
+
+Como na imagem abaixo:
+
+![OCI-Identity Domains - "Rules of game"](image-6.png)
+
+### Como identificar um Recurso OCI?
+
+**A OCI fornece, para cada recurso, o seu próprio identificador**, que é chamado de OCID, **Oracle Cloud ID**.
+
+A sintaxe desse id seria algo parecido com isso:
+
+![OCI-Identity Domains - OCID sintaxe](image-7.png)
+
+Ele começa com um **ocid1.tipo do recurso.um realm.região.um id exclusivo**
+
+> Obs.: Realm é, basicamente, o conjunto de regiões que compartilham as mesmas características.
+
+### Aula 02: Compartments
+
+Ao criar uma conta, você adquire um "tenancy" - un nome fantasia para uma conta - e também é fornecido um "compartimento raiz", então podemos pensar nesse "compartimento raiz" em um local lógico que podemos manter todos os recursos em nuvem onde, dentro dele, eu posso criar outros compartimento individuais, que lidam com os recursos de forma isolada.
+
+**A ideia é que você** sempre **crie esses compartimentos para isolamento e controle de acesso** e isso se encaixa até em uma boa prática.
+
+podemos ter uma visão melhor na imagem abaixo:
+
+![OCI-Compartments - "Overview"](image-8.png)
+
+Os recursos presentes em um compartimento não podem ser recriados em outros compartimentos, exemplo:
+
+Em um compartimento A adicionei uma VM, no compartimento B ela não estará presente, e caso eu queira usar uma VM no compartimento B eu preciso mover ela para o compartimento B ou apagar ela do compartimento A e criar ela no compartimento B, como na imagem abaixo:
+
+![OCI-Compartments](image-9.png)
+
+> Obs.: **Mesmo, os recursos, estando em diferentes compartimentos é totalmente suportado a comunicação entre eles**, mesmo estando em compartimentos separados. Exemplo, é possivel ter um compartimento B com um recurso de maquina virtual se comunicando com um compartimento A de Cloud Networking, como na imagem abaixo:
+
+![OCI-Compartments - Interaction of resources](image-10.png)
+
+### Aula 04: AuthN and AuthZ
+
+Antes de vermos mais sobre Autenticação (AuthN) e Autorização (AuthZ) precisamos entender que **entidades IAM tem permissão para interagir com recursos OCI**.
+
+> Obs.: **Os grupos de usuários compartilham os mesmos níveis de acesso aos recursos**, então por exemplo: Em determinada infraestrutura, criei um grupo com o nome de "Admins" (grupos ficam dentro dos identity domains), esses "Admins" tem regras de autorização que somente usuários do tipo admin tem e todos esses usuários dentro do grupo tem as mesmas autorizações, afinal estão fazendo parte do mesmo grupo de usuários.
+
+Iremos analisar cada um dos 2 separadamente. Começando pela **AuthN**, essa sigla significa **nada mais, nada menos, que "Autenticação"**, **basicamente ela acaba descrobrindo**, obviamente, **se você é quem você diz que é, igual em todos os sistemas da internet**, afinal, acabamos usando esse tipo de autenticação todos os dias na internet, quando criamos uma conta no Netflix, por exmeplo, e tentamos usar ela, informamos nossas credenciais e confirmamos que nós somos realmente nós (AUHSDUASD).
+
+Quando olhamos para **AuthZ**, que **nada mais é do que "Autorização"**, **ela irá olhar** não só **para** o AuthN (**"você realmente é quem diz ser?"**) mas **também irá olhar para o conjunto de permissões que você tem em determinada infraestrutura**, **no OCI a autorização é feita por meio das políticas de IAM** (é possivel pensar que essas politicas são instruções que definem permissões granulares para os usuários/grupos de usuários).
+
+> Obs.: É importante ressaltar que as **políticas IAM podem ser anexadas a um Compartimento** (o que já era de se imaginar) **ou a um Tenancy** e elas devem, obrigatóriamente, ser atribuidas a um grupo de usuário.
+
+A AuthN no OCI pode ser feita por meio de:
+
+- Username/Password;
+- API Signin keys;
+- Authentication tokens;
+
+A AuthZ no OCI pode ser feita por meio de:
+
+- IAM policies
+
+### Sintaxe AuthZ
+
+a Sintaxe das políticas IAM para autorização de um determinado grupo para um Tenancy/Compartimento é a seguine:
+
+![OCI-AuthN and AuthZ - AuthZ Sintaxe](image-11.png)
+
+Em relação a parte "< verb >", **pode existir 4 tipos de verbos**, eles são:
+
+1. **Manage** (Gerenciamento);
+2. **Use** (Uso);
+3. **Read** (Leitura);
+4. **Inspect** (Inspeção).
+
+Agora, **em relação ao "< resource-type >"**, como o nome já fala, **ele enfatiza o tipo do recurso que irá permitir**, o que pode ser todos os recursos, ou seja, tudo que está disponivel na sua conta, seja recursos de computação, banco de dados e etc.
+
+Na tabela abaixo podemos ver o que acabei de falar:
+
+![OCI-AuthN and AuthZ - Verbs and Resource types table](image-12.png)
+
+### Aula 06: Tenancy Setup
+
+Com os demos tivemos compreenção que pode existir um Tenancy Admin, e ele é a pessoa responsável pelas operações diárias dessa conta, porém isso não é uma boa prática, a imagem abaixo lista algumas das botas praticas que já falamos até agora:
+
+![OCI-Tenancy Setup - Bests Practices](image-13.png)
