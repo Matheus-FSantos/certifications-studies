@@ -2,7 +2,7 @@
 Anotações para se preparar para a certificação IZO-1085-23, certificação oficial da Oracle.
 
 
-<div style="display: flex; justify-content: center">
+<div align="center">
     <img src="https://images.credly.com/images/27db49f3-8bae-4314-8a84-884935b569db/50_Oracle_Cloud_Infrastructure.png" width="200"/>
 </div>
 
